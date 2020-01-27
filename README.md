@@ -28,7 +28,7 @@ listen stats
 This app works inside docker, so to use it simple run it with:   
 
 `docker run -d -p 80:80
--e HAPROXY_BASE_URL=https://haproxy.domain.com
+-e HAPROXY_BASE_URL=https://haproxy.domain.com/
 -e HAPROXY_PATHS=lb_stats1,lb_stats2
  leen15/haproxy-stats-visualizer `
 
@@ -38,7 +38,7 @@ And now if you open the new page it will show a section for every HaProxy Instan
 ## Environment Variables  
 
 You have to set these environment variables:  
-`HAPROXY_BASE_URL`: base url where you have your haproxy stats pages (it also support basic auth with user:pass@yourdomain.com)  
+`HAPROXY_BASE_URL`: base url where you have your haproxy stats pages (it also support basic auth with user:pass@yourdomain.com/)  
 `HAPROXY_PATHS`: A list of paths where haproxy stats are exposed (comma separated)   
 `REFRESH_INTERVAL`: For autorefresh (Default value 5 seconds)  
 
