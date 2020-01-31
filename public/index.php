@@ -1,21 +1,45 @@
 <?php
-$lbs = isset($_ENV['HAPROXY_PATHS']) ? $_ENV['HAPROXY_PATHS'] : "";
-$baseurl = isset($_ENV['HAPROXY_BASE_URL']) ? $_ENV['HAPROXY_BASE_URL'] : "";
 $refresh_interval = isset($_ENV['REFRESH_INTERVAL']) ? $_ENV['REFRESH_INTERVAL'] : 5;
 $refresh = isset($_GET['norefresh']) ? false : true;
 
-if ($lbs == "" || $baseurl == "")
+// Search for a base url with multiple LB paths
+$baseurl = isset($_ENV['HAPROXY_BASE_URL']) ? $_ENV['HAPROXY_BASE_URL'] : "";
+$lb_paths = isset($_ENV['HAPROXY_PATHS']) ? $_ENV['HAPROXY_PATHS'] : "";
+if (substr($baseurl, -1) != "/")
+    $baseurl .= "/";
+
+// Search for full LB URLS, something like LB_URL_1=Balancer1#http...
+$lb_urls = array_filter($_ENV, function ($key) {
+    return strpos($key, 'LB_URL_') === 0;
+}, ARRAY_FILTER_USE_KEY);
+
+if (count($lb_urls) == 0 && ($lb_paths == "" || $baseurl == ""))
 {
-    die("Missing envs HAPROXY_PATHS or HAPROXY_BASE_URL");
+    die("Missing envs HAPROXY_PATHS, HAPROXY_BASE_URL or LB_URL_*");
 }
 
-$lbs_array = explode(",", $lbs);
-
-
+$lbs_array = array();
 $lbs_data = array();
+
+
+if ($lb_paths != "")
+{
+    $lb_paths_array = explode(",", $lb_paths);
+    foreach ($lb_paths_array as $lb_path) {
+        array_push($lbs_array, array('name'=> $lb_path, 'url' => $baseurl . trim($lb_path)));
+    }
+}
+
+foreach ($lb_urls as $key => $value) {
+    $value_parts = explode("#", $value);
+    $name = str_replace('_', ' ',$value_parts[0]);
+    $url = $value_parts[1];
+    array_push($lbs_array, array('name'=> $name, 'url' => $url));
+}
+
 foreach ($lbs_array as $lb) {
-    $data = file_get_contents($baseurl . trim($lb) . ";csv;norefresh");
-    $lbs_data[$lb] = csv_to_array(substr($data, 2));
+    $data = file_get_contents($lb['url'] . ";csv;norefresh");
+    $lbs_data[$lb['name']] = csv_to_array(substr($data, 2));
 }
 
 function csv_to_array($csvData, $delimiter=',')

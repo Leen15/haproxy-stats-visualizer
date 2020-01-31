@@ -28,7 +28,7 @@ listen stats
 This app works inside docker, so to use it simple run it with:   
 
 `docker run -d -p 80:80
--e HAPROXY_BASE_URL=https://haproxy.domain.com/
+-e HAPROXY_BASE_URL=https://haproxy.domain.com
 -e HAPROXY_PATHS=lb_stats1,lb_stats2
  leen15/haproxy-stats-visualizer `
 
@@ -42,7 +42,14 @@ You have to set these environment variables:
 `HAPROXY_PATHS`: A list of paths where haproxy stats are exposed (comma separated)   
 `REFRESH_INTERVAL`: For autorefresh (Default value 5 seconds)  
 
+The app also support envs with a full URLs, like this:   
+`LB_URL_1=B2B_Balancer#https://haproxy1.domain.com/haproxy_stats`
+`LB_URL_2=B2C_Balancer#https://haproxy2.domain.com/haproxy_stats`
 
+The format is:   
+`LB_URL_{OrderCounter}={Name_Of_Balancer}#{Url.of.haproxy}`   
+For the name field underscores will be replace with spaces.   
+    
 ## License
 
 This project is released under the terms of the [MIT license](http://en.wikipedia.org/wiki/MIT_License).
