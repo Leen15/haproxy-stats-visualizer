@@ -29,7 +29,7 @@ if ($lb_paths != "")
         array_push($lbs_array, array('name'=> $lb_path, 'url' => $baseurl . trim($lb_path)));
     }
 }
-
+ksort($lb_urls);
 foreach ($lb_urls as $key => $value) {
     $value_parts = explode("#", $value);
     $name = str_replace('_', ' ',$value_parts[0]);
@@ -75,7 +75,7 @@ function secondsToTime($seconds) {
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=0.7">
-        <?php if ($refresh) echo '<META HTTP-EQUIV="Refresh" CONTENT="' . $refresh_interval . '">' ?>        
+        <?php if ($refresh) echo '<META HTTP-EQUIV="Refresh" CONTENT="' . $refresh_interval . '">' ?>
         <title>HaProxy Visualizer </title>
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
         <style>
@@ -103,7 +103,7 @@ function secondsToTime($seconds) {
             <a class="refresh-tooltip" href="?<?php echo ($refresh) ? 'norefresh' : '' ?>">
                 <?php echo ($refresh) ? 'Auto-Refresh Enabled' : 'Auto-Refresh Disabled'; ?>  </a>
             <div class="">
-            <div class="d-flex flex-row flex-wrap justify-content-center"> 
+            <div class="d-flex flex-row flex-wrap justify-content-center">
             <?php
                 foreach ($lbs_data as $lb_name=>$lb_stats) {
                     echo '<div class="table-box">';
@@ -114,23 +114,23 @@ function secondsToTime($seconds) {
                     $lb_servers = array_filter($lb_stats, function ($var) {
                         return ($var['pxname'] == 'servers');
                     });
-                    
-                    foreach ($lb_servers as $lb_server) {
-                        
-                        $rowStyle = "background: " . (($lb_server['status'] == 'UP') ? 'lightgreen' : 'lightcoral');
-                         
 
-                        echo '<tr style="'. $rowStyle . '"><td>'  . $lb_server['svname']. '</td><td> ' 
-                                    . $lb_server['status'] . '</td><td>' 
-                                    . secondsToTime( $lb_server['lastchg']) . '</td><td>' 
-                                    . $lb_server['check_status'] . "/" 
-                                    . $lb_server['check_code'] . " in " 
-                                    . $lb_server['check_duration'] . 'ms</td><td>' 
+                    foreach ($lb_servers as $lb_server) {
+
+                        $rowStyle = "background: " . (($lb_server['status'] == 'UP') ? 'lightgreen' : 'lightcoral');
+
+
+                        echo '<tr style="'. $rowStyle . '"><td>'  . $lb_server['svname']. '</td><td> '
+                                    . $lb_server['status'] . '</td><td>'
+                                    . secondsToTime( $lb_server['lastchg']) . '</td><td>'
+                                    . $lb_server['check_status'] . "/"
+                                    . $lb_server['check_code'] . " in "
+                                    . $lb_server['check_duration'] . 'ms</td><td>'
                                     . secondsToTime($lb_server['downtime']) . '</td></tr>';
                     }
 
                     echo '</tbody></table>';
-                    echo '</div>';                    
+                    echo '</div>';
                 }
             ?>
             </div>
@@ -140,5 +140,5 @@ function secondsToTime($seconds) {
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
     </body>
- 
+
  </html>
