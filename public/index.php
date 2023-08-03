@@ -118,7 +118,7 @@ function secondsToTime($seconds) {
                     foreach ($lb_servers as $lb_server) {
 
                         $stateColor = 'lightgreen';
-                        if ($lb_server['status'] == 'MAINT') {
+                        if (strpos($lb_server['status'], 'MAINT') === 0) {
                             $stateColor = 'lightgray';
                         }
                         else if ($lb_server['status'] != 'UP') {
