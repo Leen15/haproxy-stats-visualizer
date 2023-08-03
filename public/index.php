@@ -117,7 +117,14 @@ function secondsToTime($seconds) {
 
                     foreach ($lb_servers as $lb_server) {
 
-                        $rowStyle = "background: " . (($lb_server['status'] == 'UP') ? 'lightgreen' : 'lightcoral');
+                        $stateColor = 'lightgreen';
+                        if ($lb_server['status'] == 'MAINT') {
+                            $stateColor = 'lightgray';
+                        }
+                        else if ($lb_server['status'] != 'UP') {
+                            $stateColor = 'lightcoral';
+                        }
+                        $rowStyle = "background: " . $stateColor;
 
 
                         echo '<tr style="'. $rowStyle . '"><td>'  . $lb_server['svname']. '</td><td> '
